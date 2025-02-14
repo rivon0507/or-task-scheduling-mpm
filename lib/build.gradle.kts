@@ -9,6 +9,7 @@
 plugins {
     // Apply the java-library plugin for API and implementation separation.
     `java-library`
+    id("io.freefair.lombok") version "8.12.1"
 }
 
 repositories {
@@ -22,6 +23,7 @@ dependencies {
 
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     implementation(libs.guava)
+    implementation("org.jetbrains:annotations:24.0.0")
 }
 
 testing {
