@@ -11,6 +11,7 @@ plugins {
     `java-library`
     id("io.freefair.lombok") version "8.12.1"
     `maven-publish`
+    id("pl.allegro.tech.build.axion-release") version "1.18.16"
 }
 
 repositories {
@@ -43,3 +44,9 @@ java {
         languageVersion = JavaLanguageVersion.of(17)
     }
 }
+
+scmVersion {
+    tag.prefix = "origin"
+}
+
+project.version = scmVersion.version
