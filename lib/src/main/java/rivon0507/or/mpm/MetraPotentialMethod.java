@@ -260,7 +260,7 @@ public class MetraPotentialMethod {
     /// @throws IllegalStateException if the graph contain a cycle
     private void checkForCycles() {
         Set<String> visited = new HashSet<>();
-        Set<String> recursionStack  = predecessors.keySet();
+        Set<String> recursionStack = new HashSet<>();
 
         for (String task : predecessors.keySet()) {
             if (!visited.contains(task)) {
