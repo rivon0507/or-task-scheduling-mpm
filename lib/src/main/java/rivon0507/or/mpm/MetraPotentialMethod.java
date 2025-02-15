@@ -51,6 +51,8 @@ public class MetraPotentialMethod {
             addPredecessors(name, predecessorIterator.next());
         }
 
+        checkForCycles();
+
         for (String taskName : taskNames) {
             if (!successors.containsKey(taskName) || successors.get(taskName).isEmpty()) {
                 successors.put(taskName, new LinkedList<>(List.of(END_TASK)));
@@ -251,5 +253,41 @@ public class MetraPotentialMethod {
                 .orElseThrow(() -> new IllegalStateException("Task " + task + " has no predecessor"));
 
         earliest.put(task, res);
+    }
+
+    /// Checks if the tasks dependencies do not form cycles
+    ///
+    /// @throws IllegalStateException if the graph contain a cycle
+    private void checkForCycles() {
+        Map<String, Boolean> visited = new HashMap<>();
+
+        for (String task : predecessors.keySet()) {
+            if (!visited.computeIfAbsent(task, k -> false)) {
+                if (isCyclic(predecessors, task, new HashMap<>(), visited)) {
+                    throw new IllegalStateException("Tasks have cycle at " + task);
+                }
+            }
+        }
+    }
+
+    private static boolean isCyclic(@NotNull Map<String, List<String>> graph,
+                                    String node,
+                                    @NotNull Map<String, Boolean> recursionStack,
+                                    @NotNull Map<String, Boolean> visited
+    ) {
+
+        visited.put(node, true);
+        recursionStack.put(node, true);
+        for (String neighbor : graph.get(node)) {
+            if (!visited.computeIfAbsent(neighbor, k -> false)) {
+                if (isCyclic(graph, neighbor, recursionStack, visited)) {
+                    return true;
+                }
+            } else if (recursionStack.computeIfAbsent(neighbor, k -> false)) {
+                return true;
+            }
+        }
+        recursionStack.put(node, false);
+        return false;
     }
 }
