@@ -5,7 +5,10 @@ package rivon0507.or.mpm;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static rivon0507.or.mpm.MetraPotentialMethod.END_TASK;
@@ -66,7 +69,7 @@ class MetraPotentialMethodTest {
                 () -> new MetraPotentialMethod(
                         List.of("a", "b", "c"),
                         List.of(1, 2, 8),
-                        List.of(List.of("a", "b", "c"), List.of("c"), List.of())
+                        List.of(List.of("b", "c"), List.of("c"), List.of())
                 ),
                 "Initialization should be successful"
         );
@@ -313,6 +316,43 @@ class MetraPotentialMethodTest {
                 latest,
                 method.latestDates(),
                 "The algorithm should correctly compute the latest start date for each task"
+        );
+    }
+
+    @Test
+    void whenATaskHasItselfAsItsOwnPredecessor() {
+        assertThrows(
+                IllegalStateException.class,
+                () -> new MetraPotentialMethod(
+                        List.of("a", "b", "c"),
+                        List.of(1, 2, 3),
+                        List.of(List.of("a"), List.of(), List.of())
+                ),
+                "Should fail initialization"
+        );
+    }
+
+    @Test
+    void whenATaskHasASymmetricDependencyWithAnother() {
+        assertThrows(
+                IllegalStateException.class,
+                () -> new MetraPotentialMethod(
+                        List.of("a", "b", "c"),
+                        List.of(1, 2, 3),
+                        List.of(List.of("b"), List.of("a"), List.of())
+                )
+        );
+    }
+
+    @Test
+    void whenFourTasksHaveCyclicDependencies() {
+        assertThrows(
+                IllegalStateException.class,
+                () -> new MetraPotentialMethod(
+                        List.of("a", "b", "c", "d", "e", "f"),
+                        List.of(1, 2, 3, 4, 5, 6),
+                        List.of(List.of("b"), List.of("c"), List.of("d"), List.of("a"), List.of("a"), List.of("a"))
+                )
         );
     }
 }
