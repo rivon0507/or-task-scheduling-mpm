@@ -47,14 +47,13 @@ java {
 
 scmVersion {
     releaseOnlyOnReleaseBranches = true
-    releaseBranchNames.set(listOf("main", "release/.*", "hotfix/.*", "feat/.*"))
+    releaseBranchNames.set(listOf("release/.*", "hotfix/.*"))
     tag.prefix = "v"
 
     branchVersionIncrementer.putAll(
         mapOf(
             "hotfix/.*" to "incrementPatch",
             "release/.*" to "incrementMinor",
-            "feat/.*" to "incrementMinor",
         )
     )
 
