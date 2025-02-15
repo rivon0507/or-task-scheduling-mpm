@@ -259,11 +259,12 @@ public class MetraPotentialMethod {
     ///
     /// @throws IllegalStateException if the graph contain a cycle
     private void checkForCycles() {
-        Map<String, Boolean> visited = new HashMap<>();
+        Set<String> visited = new HashSet<>();
+        Set<String> recursionStack  = predecessors.keySet();
 
         for (String task : predecessors.keySet()) {
-            if (!visited.computeIfAbsent(task, k -> false)) {
-                if (isCyclic(predecessors, task, new HashMap<>(), visited)) {
+            if (!visited.contains(task)) {
+                if (isCyclic(predecessors, task, recursionStack, visited)) {
                     throw new IllegalStateException("Tasks have cycle at " + task);
                 }
             }
@@ -272,22 +273,22 @@ public class MetraPotentialMethod {
 
     private static boolean isCyclic(@NotNull Map<String, List<String>> graph,
                                     String node,
-                                    @NotNull Map<String, Boolean> recursionStack,
-                                    @NotNull Map<String, Boolean> visited
+                                    @NotNull Set<String> recursionStack,
+                                    @NotNull Set<String> visited
     ) {
 
-        visited.put(node, true);
-        recursionStack.put(node, true);
+        visited.add(node);
+        recursionStack.add(node);
         for (String neighbor : graph.get(node)) {
-            if (!visited.computeIfAbsent(neighbor, k -> false)) {
+            if (!visited.contains(neighbor)) {
                 if (isCyclic(graph, neighbor, recursionStack, visited)) {
                     return true;
                 }
-            } else if (recursionStack.computeIfAbsent(neighbor, k -> false)) {
+            } else if (recursionStack.contains(neighbor)) {
                 return true;
             }
         }
-        recursionStack.put(node, false);
+        recursionStack.remove(node);
         return false;
     }
 }
