@@ -10,6 +10,8 @@ plugins {
     // Apply the java-library plugin for API and implementation separation.
     `java-library`
     id("io.freefair.lombok") version "8.12.1"
+    `maven-publish`
+    id("pl.allegro.tech.build.axion-release") version "1.18.16"
 }
 
 repositories {
@@ -42,3 +44,23 @@ java {
         languageVersion = JavaLanguageVersion.of(17)
     }
 }
+
+scmVersion {
+    releaseOnlyOnReleaseBranches = true
+    releaseBranchNames.set(listOf("release/.*", "hotfix/.*"))
+    tag.prefix = "v"
+
+    branchVersionIncrementer.putAll(
+        mapOf(
+            "hotfix/.*" to "incrementPatch",
+            "release/.*" to "incrementMinor",
+        )
+    )
+
+    repository {
+        customPassword = System.getenv("CI_ACCESS_TOKEN")
+        customUsername = System.getenv("CI_USERNAME")
+    }
+}
+
+project.version = scmVersion.version
