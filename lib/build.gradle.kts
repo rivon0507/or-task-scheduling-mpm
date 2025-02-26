@@ -64,3 +64,15 @@ scmVersion {
 }
 
 project.version = scmVersion.version
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            from(components["java"])
+            artifactId = "task-scheduling-mpm"
+        }
+        repositories {
+            mavenLocal()
+        }
+    }
+}
