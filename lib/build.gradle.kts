@@ -69,7 +69,7 @@ publishing {
     publications {
         create<MavenPublication>("maven") {
             from(components["java"])
-            artifactId = "task-scheduling-mpm"
+            artifactId = "or-task-scheduling-mpm"
         }
         repositories {
             mavenLocal()
