@@ -1,0 +1,43 @@
+name: pr-test-run
+on:
+  pull_request:
+    branches: [ main ]
+jobs:
+  run-gradle-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 22
+        uses: actions/setup-java@v4
+        with:
+          java-version: '22'
+          distribution: 'temurin'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Grant execution permission to ./gradlew
+        run: chmod +x ./gradlew
+
+      - name: Run Gradle checks
+        run: ./gradlew check --continue
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: build/test-results/test/*
+
+      - name: Upload test reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-reports
+          path: build/reports/tests/
+
+      - name: Check for test failures
+        if: failure()
+        run: |
+          echo "::error::Tests failed! Please review the test results and reports artifacts."
