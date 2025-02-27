@@ -13,13 +13,14 @@ plugins {
     `java-library`
     id("io.freefair.lombok") version "8.12.1"
     `maven-publish`
-    id("pl.allegro.tech.build.axion-release") version "1.18.16"
 }
 
 repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
 }
+
+group = "com.github.rivon0507"
 
 dependencies {
     // This dependency is exported to consumers, that is to say found on their compile classpath.
@@ -43,29 +44,9 @@ testing {
 // Apply a specific Java toolchain to ease working on different environments.
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(22)
     }
 }
-
-scmVersion {
-    releaseOnlyOnReleaseBranches = true
-    releaseBranchNames.set(listOf("release/.*", "hotfix/.*"))
-    tag.prefix = "v"
-
-    branchVersionIncrementer.putAll(
-        mapOf(
-            "hotfix/.*" to "incrementPatch",
-            "release/.*" to "incrementMinor",
-        )
-    )
-
-    repository {
-        customPassword = System.getenv("CI_ACCESS_TOKEN")
-        customUsername = System.getenv("CI_USERNAME")
-    }
-}
-
-project.version = scmVersion.version
 
 tasks.register<Jar>("javadocJar") {
     dependsOn(tasks["javadoc"])
