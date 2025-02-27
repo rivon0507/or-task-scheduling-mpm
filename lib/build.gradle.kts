@@ -61,14 +61,23 @@ tasks.register<Jar>("sourcesJar") {
 
 publishing {
     publications {
-        create<MavenPublication>("maven") {
+        create<MavenPublication>("gpr") {
             from(components["java"])
             artifactId = "or-task-scheduling-mpm"
             artifact(tasks["sourcesJar"])
             artifact(tasks["javadocJar"])
         }
-        repositories {
-            mavenLocal()
+    }
+
+    repositories {
+        mavenLocal()
+        maven {
+            name = "GithubPackages"
+            url = uri("https://maven.pkg.github.com/rivon0507/or-task-scheduling-mpm")
+            credentials {
+                username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
+            }
         }
     }
 }
