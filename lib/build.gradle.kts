@@ -42,17 +42,6 @@ testing {
     }
 }
 
-tasks.register<Jar>("javadocJar") {
-    dependsOn(tasks["javadoc"])
-    archiveClassifier.set("javadoc")
-    from(tasks.named("javadoc").get().outputs)
-}
-
-tasks.register<Jar>("sourcesJar") {
-    archiveClassifier.set("sources")
-    from(sourceSets.main.get().allSource)
-}
-
 // Apply a specific Java toolchain to ease working on different environments.
 java {
     toolchain {
