@@ -36,3 +36,5 @@ jobs:
           files: |
             lib/build/staging-deploy/io/github/rivon0507/or-task-scheduling-mpm/${{steps.extract_version.outputs.version}}/*
           generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASER_TOKEN }}
