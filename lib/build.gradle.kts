@@ -20,7 +20,7 @@ repositories {
     mavenCentral()
 }
 
-group = "com.github.rivon0507"
+group = "io.github.rivon0507"
 
 dependencies {
     // This dependency is exported to consumers, that is to say found on their compile classpath.
@@ -46,38 +46,47 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(22)
     }
-}
-
-tasks.register<Jar>("javadocJar") {
-    dependsOn(tasks["javadoc"])
-    archiveClassifier.set("javadoc")
-    from(tasks.named("javadoc").get().outputs)
-}
-
-tasks.register<Jar>("sourcesJar") {
-    archiveClassifier.set("sources")
-    from(sourceSets.main.get().allSource)
+    withJavadocJar()
+    withSourcesJar()
 }
 
 publishing {
     publications {
-        create<MavenPublication>("gpr") {
-            from(components["java"])
+        create<MavenPublication>("maven") {
+            groupId = "io.github.rivon0507"
             artifactId = "or-task-scheduling-mpm"
-            artifact(tasks["sourcesJar"])
-            artifact(tasks["javadocJar"])
+            from(components["java"])
+
+            pom {
+                name = "or-task-scheduling-mpm"
+                description = "A library for computing optimal task scheduling, given task dependencies and durations."
+                url = "https://github.com/rivon0507/or-task-scheduling-mpm"
+                inceptionYear = "2025"
+                licenses {
+                    license {
+                        name = "The MIT License"
+                        url = "https://opensource.org/licenses/MIT"
+                    }
+                }
+                developers {
+                    developer {
+                        id = "rivon0507"
+                        name = "Flavien TSIRIHERIVONJY"
+                    }
+                }
+                scm {
+                    connection = "scm:git:https://github.com/rivon0507/or-task-scheduling-mpm.git"
+                    developerConnection = "scm:git:ssh://github.com/rivon0507/or-task-scheduling-mpm.git"
+                    url = "https://github.com/rivon0507/or-task-scheduling-mpm"
+                }
+            }
         }
     }
 
     repositories {
         mavenLocal()
         maven {
-            name = "GithubPackages"
-            url = uri("https://maven.pkg.github.com/rivon0507/or-task-scheduling-mpm")
-            credentials {
-                username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
-                password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
-            }
+            url = uri(layout.buildDirectory.dir("staging-deploy"))
         }
     }
 }

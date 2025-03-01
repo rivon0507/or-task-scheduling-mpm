@@ -20,7 +20,14 @@ public class MetraPotentialMethod {
     private final Map<String, List<String>> successors = new HashMap<>();
     private final LinkedList<String> criticalPath = new LinkedList<>();
 
+    /// Represents a placeholder for the starting point in the task scheduling algorithm.
+    /// This is not an actual task, but is used to provide a predecessor
+    /// to tasks that do not have one, marking the beginning of the project graph.
     public static final String START_TASK = "start";
+
+    /// Represents a placeholder for the ending point in the task scheduling algorithm.
+    /// This is not an actual task, but is used to provide a  successor
+    /// to tasks that do not have one, marking the end of the project graph.
     public static final String END_TASK = "end";
 
     /// Constructs the graph of the tasks using the provided arguments. The order of the tasks' data in the three arguments
@@ -73,7 +80,7 @@ public class MetraPotentialMethod {
         this.predecessors.putAll(StreamSupport.stream(taskNames.spliterator(), false).distinct()
                 .collect(Collectors.toMap(
                         k -> k,
-                        k -> new LinkedList<>()
+                        _ -> new LinkedList<>()
                 ))
         );
         this.successors.put(START_TASK, new LinkedList<>());
@@ -81,7 +88,7 @@ public class MetraPotentialMethod {
         this.successors.putAll(StreamSupport.stream(taskNames.spliterator(), false).distinct()
                 .collect(Collectors.toMap(
                         k -> k,
-                        k -> new LinkedList<>()
+                        _ -> new LinkedList<>()
                 ))
         );
     }
@@ -185,6 +192,7 @@ public class MetraPotentialMethod {
     }
 
     /// Returns the cached critical path and compute it if it is not yet cached
+    /// @return the critical path
     @UnmodifiableView
     public List<String> criticalPath() {
         if (criticalPath.isEmpty()) {
@@ -194,6 +202,7 @@ public class MetraPotentialMethod {
     }
 
     /// Returns the cached latest start dates and compute it if it is not yet cached
+    /// @return the latest start dates
     @UnmodifiableView
     public Map<String, Integer> latestDates() {
         if (latest.isEmpty()) {
@@ -203,6 +212,7 @@ public class MetraPotentialMethod {
     }
 
     /// Returns the cached earliest start dates and compute it if it is not yet cached
+    /// @return the earliest start dates
     @UnmodifiableView
     public Map<String, Integer> earliestDates() {
         if (earliest.isEmpty()) {
@@ -211,16 +221,19 @@ public class MetraPotentialMethod {
         return Collections.unmodifiableMap(earliest);
     }
 
+    /// @return a map associating a task name to its predecessors' names
     @UnmodifiableView
     public Map<String, List<String>> getPredecessors() {
         return Collections.unmodifiableMap(predecessors);
     }
 
+    /// @return a map associating a task name to its successors' names
     @UnmodifiableView
     public Map<String, List<String>> getSuccessors() {
         return Collections.unmodifiableMap(successors);
     }
 
+    /// @return a map associating a task name to its duration
     @UnmodifiableView
     public Map<String, Integer> getDurations() {
         return Collections.unmodifiableMap(durations);
