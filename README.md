@@ -42,9 +42,9 @@ Then, add the dependency:
 ```xml
 
 <dependency>
-    <groupId>com.github.rivon0507</groupId>
+    <groupId>io.github.rivon0507</groupId>
     <artifactId>or-task-scheduling-mpm</artifactId>
-    <version>0.5.1</version>
+    <version>0.6.0</version>
 </dependency>
 ```
 
@@ -62,7 +62,7 @@ Then, add the dependency:
 
 ```groovy
 dependencies {
-    implementation 'com.github.rivon0507:or-task-scheduling-mpm:0.5.1'
+    implementation 'io.github.rivon0507:or-task-scheduling-mpm:0.6.0'
 }
 ```
 
