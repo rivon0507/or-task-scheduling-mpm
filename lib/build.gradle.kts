@@ -25,7 +25,7 @@ repositories {
     mavenCentral()
 }
 
-group = "com.github.rivon0507"
+group = "io.github.rivon0507"
 
 dependencies {
     // This dependency is exported to consumers, that is to say found on their compile classpath.
@@ -116,8 +116,4 @@ jreleaser {
             }
         }
     }
-}
-
-tasks.register("debug") {
-
 }

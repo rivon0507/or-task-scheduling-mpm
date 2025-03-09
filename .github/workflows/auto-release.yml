@@ -1,0 +1,40 @@
+on:
+  push:
+    tags: [ "v*.*.*" ]
+    
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Extract version from release tag
+        id: extract_version
+        run: |
+          VERSION=$(echo "${GITHUB_REF#refs/tags/}" | sed 's/^v//')
+          echo "::set-output name=version::$VERSION"
+
+      - name: Set up JDK 22
+        uses: actions/setup-java@v4
+        with:
+          java-version: '22'
+          distribution: temurin
+          server-id: 'github'
+          settings-path: ${{github.workspace}}
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build then publish the project
+        run: ./gradlew build publish -Pversion=${{steps.extract_version.outputs.version}}
+      
+      - name: GH Release
+        uses: softprops/action-gh-release@v2.2.1
+        with:
+          draft: true
+          files: |
+            lib/build/staging-deploy/io/github/rivon0507/or-task-scheduling-mpm/${{steps.extract_version.outputs.version}}/*
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASER_TOKEN }}
